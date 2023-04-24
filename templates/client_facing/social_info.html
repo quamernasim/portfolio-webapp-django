@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Social Media{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+    <div class="row">
+        <h3>Welcome <span class="text-capitalize">{{request.user}}</span></h3>
+        <div class="col-sm-2 border-end">
+            <ul class="list-unstyled">
+                <li class="d-grid"><a href="{% url "add_basic_info" %}" class="btn">Basic Info</a></li>
+                <li class="d-grid"><a href="{% url "social_media" %}" class="btn btn-primary">Social Media</a></li>
+                <li class="d-grid"><a href="{% url "add_project" %}" class="btn">Add Projects</a></li>
+                <li class="d-grid"><a href="{% url "add_research" %}" class="btn">Add Research</a></li>
+                <li class="d-grid"><a href="{% url "projects" %}" class="btn">Projects</a></li>
+                <li class="d-grid"><a href="{% url "research" %}" class="btn">Researches</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 offset-sm-1">
+            <div class="row">
+                {% for sm in social %}
+                    <div class="col-sm-15">
+                        <div class="card m-2">
+                            <div class="card-body">
+                                <p>Facebook: {{sm.facebook}}</p>
+                                <p>Twitter: {{sm.twitter}}</p>
+                                <p>Instagram: {{sm.instagram}}</p>
+                                <p>Linkedin: {{sm.linkedin}}</p>
+                                <p>Github: {{sm.github}}</p>
+                                <p>Medium: {{sm.medium}}</p>
+                                <p>Stackoverflow: {{sm.stackoverflow}}</p>
+                                <p>Whatsapp: {{sm.whatsapp}}</p>
+                                <p>Telegram: {{sm.telegram}}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main-content %}

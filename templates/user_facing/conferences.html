@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Projects{% endblock title%}
+{% block main-content %}
+  <div class="proj">
+    <header>
+      <h1>Conferences</h1>
+    </header>
+    {% if conferences %}
+      <ul>
+        {% for conference in conferences %}
+          <li>
+            <h2>{{ conference.title }}</h2>
+            <p>{{ conference.abstract|linebreaks }}</p>
+            <a href="#">View Conference &rarr;</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No conference found.</p>
+    {% endif %}
+  </div>
+{% endblock main-content %}
