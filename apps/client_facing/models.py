@@ -46,9 +46,10 @@ class Projects(models.Model):
     link = models.URLField(blank=True)
 
 class Research(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=200)
     abstract = models.TextField()
     article_type = models.CharField(choices=ARTICLE_TYPE_CHOICES, max_length=100)
+    author_names = models.CharField(max_length=200, default="")
     image = models.ImageField(upload_to='research/', blank=True)
     link = models.URLField(blank=True)
 

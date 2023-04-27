@@ -6,9 +6,9 @@
     <header>
       <h1>Pre-Prints</h1>
     </header>
-    {% if preprints %}
+    {% if researches %}
       <ul>
-        {% for preprint in preprints %}
+        {% for preprint in researches %}
           <li>
             <h2>{{ preprint.title }}</h2>
             <p>{{ preprint.abstract|linebreaks }}</p>

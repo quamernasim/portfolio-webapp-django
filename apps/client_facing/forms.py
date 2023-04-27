@@ -53,11 +53,12 @@ class ResearchForm(forms.ModelForm):
             
     class Meta:
         model = Research
-        fields = ['title', 'abstract', 'article_type', 'image', 'link']
+        fields = ['title', 'abstract', 'article_type', 'author_names', 'image', 'link']
         widgets = {
             'title': forms.TextInput(attrs={'class':'form-control'}),
             'abstract': forms.Textarea(attrs={'class':'form-control'}),
             'article_type': forms.Select(attrs={'class':'form-control'}),
+            'author_names': forms.TextInput(attrs={'class':'form-control'}),
             'image': forms.FileInput(attrs={'class':'form-control'}),
             'link': forms.URLInput(attrs={'class':'form-control'}),
         }

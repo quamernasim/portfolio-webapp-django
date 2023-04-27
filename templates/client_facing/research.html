@@ -24,7 +24,10 @@
                                 <h3>Title: {{rs.title}}</h3>
                                 <p>Article Type: {{rs.article_type}}</p>
                                 <p>Abstract: {{rs.abstract}}</p>
+                                <p>Author Names: {{rs.author_names}}</p>
                                 <p>Link: {{rs.link}}</p>
+                                <a href="{% url 'update_research' id=rs.id %}" class="btn btn-primary">Update</a>
+                                <a href="{% url 'delete_research' id=rs.id %}" class="btn btn-danger">Delete</a>
                             </div>
                         </div>
                     </div>

@@ -177,3 +177,45 @@ class ProjectsInfoView(View):
             return render(request, 'client_facing/projects.html', locals())
         else:
             return render(request, 'user_facing/home.html', {})
+        
+class UpdateResearch(View):
+    def get(self, request, id):
+        if str(request.user) == ROOT_USER:
+            research = Research.objects.get(id=id)
+            form = ResearchForm(instance=research)
+            return render(request, 'client_facing/update_research.html', locals())
+        else:
+            return render(request, 'user_facing/home.html', {})
+    
+    def post(self, request, id):
+        if request.method == 'POST':
+            research = Research.objects.get(id=id)
+            form = ResearchForm(request.POST, request.FILES, instance=research)
+            if form.is_valid():
+                title = form.cleaned_data['title']
+                abstract = form.cleaned_data['abstract']
+                article_type = form.cleaned_data['article_type']
+                image = form.cleaned_data['image']
+                link = form.cleaned_data['link']
+
+                research.title = title
+                research.abstract = abstract
+                research.article_type = article_type
+                research.image = image
+                research.link = link
+                research.save()
+                
+                messages.success(request, 'Your research has been updated successfully.')
+            else:
+                messages.error(request, 'Please correct the error below.')
+                messages.error(request, form.errors)
+
+        return redirect('research')
+    
+    def delete(self, request, id):
+        if request.method == 'DELETE':
+            research = Research.objects.get(id=id)
+            research.delete()
+            messages.success(request, 'Your research has been deleted successfully.')
+
+        return redirect('research')

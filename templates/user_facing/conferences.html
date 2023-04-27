@@ -6,9 +6,9 @@
     <header>
       <h1>Conferences</h1>
     </header>
-    {% if conferences %}
+    {% if researches %}
       <ul>
-        {% for conference in conferences %}
+        {% for conference in researches %}
           <li>
             <h2>{{ conference.title }}</h2>
             <p>{{ conference.abstract|linebreaks }}</p>
