@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'corsheaders',
 
     'apps.client',
@@ -58,19 +59,11 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.authentication.TokenAuthentication',
-#     ],
-# }
-
-# REST_FRAMEWORK = {
-#     # Use Django's standard `django.contrib.auth` permissions,
-#     # or allow read-only access for unauthenticated users.
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-#     ]
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
 
 
 CORS_ALLOWED_ORIGINS = [
@@ -154,3 +147,25 @@ AUTH_USER_MODEL = 'client.AuthUser'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+from datetime import timedelta
+
+SJWT_SECRET_KEY = 'secret'
+SJWT_ALGORITHM = 'HS256'
+SJWT_EXPIRATION_DELTA = timedelta(hours=1)
+
+SECRET_KEY
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": SJWT_EXPIRATION_DELTA,
+
+    "ALGORITHM": SJWT_ALGORITHM,
+    "SIGNING_KEY": SJWT_SECRET_KEY,
+    "VERIFYING_KEY": SJWT_SECRET_KEY,
+
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+
+}

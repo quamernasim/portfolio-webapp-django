@@ -3,8 +3,17 @@ from ..serializers.auth import AuthUserSerializer
 from rest_framework.response import Response
 from ..models.auth import AuthUser
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework import status
+from rest_framework_simplejwt.tokens import AccessToken
+
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 import jwt, datetime
+from django.conf import settings
+
+secret_key = settings.SJWT_SECRET_KEY
+algorithm = settings.SJWT_ALGORITHM
 
 class Register(APIView):
     def post(self, request):
@@ -12,7 +21,9 @@ class Register(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-    
+
+from rest_framework_simplejwt.backends import TokenBackend
+
 class Login(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -26,27 +37,24 @@ class Login(APIView):
         if not user.check_password(password):
             raise AuthenticationFailed('Incorrect password!')
         
-        payload = {
-            'id': user.id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            'iat': datetime.datetime.utcnow()
-        }
-
-        token = jwt.encode(payload, 'secret', algorithm='HS256')
+        token = AccessToken.for_user(user)
         
         response = Response()
 
-        response.set_cookie(key='jwt', value=token, httponly=True)
         response.data = {
-            'jwt': token
+            'jwt': str(token),
+            'message': 'success',
+            'status': status.HTTP_200_OK,
+            'data': {}
         }
 
         return response
     
 class UserView(APIView):
-    
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
-        token = request.COOKIES.get('jwt')
+        token = request.headers.get('Authorization').split(' ')[1]
 
         if not token:
             raise AuthenticationFailed('Unauthenticated!')
@@ -59,14 +67,5 @@ class UserView(APIView):
         user = AuthUser.objects.filter(id=payload['id']).first()
         serializer = AuthUserSerializer(user)
         return Response(serializer.data)
-    
-class LogoutView(APIView):
-    def post(self, request):
-        response = Response()
-        response.delete_cookie('jwt')
-        response.data = {
-            'message': 'success'
-        }
-        return response
 
     

@@ -24,8 +24,3 @@ class AuthUser(AbstractUser):
         help_text='Specific permissions for this user.', 
         verbose_name='user permissions',
     )
-
-    def save(self, *args, **kwargs):
-        if not self.username:
-            self.username = 'q'
-        super().save(*args, **kwargs)

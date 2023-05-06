@@ -4,13 +4,17 @@ from ..models.basic import BasicInfo
 from django.contrib import messages
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 ROOT_USER = 'quamer23nasim38@gmail.com'
 
 # Create your views here.
 
 class BasicInfoView(APIView):
-#     queryset = BasicInfo.objects.all()
+    
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         basic = BasicInfo.objects.filter(email=ROOT_USER)
         if basic.exists():
@@ -41,7 +45,6 @@ class BasicInfoView(APIView):
                         'data': serializer.data}
                 return Response(data, status=status.HTTP_201_CREATED)
             else:
-                print('yaha p')
                 data = {'message': 'Bad Request',
                         'status': status.HTTP_400_BAD_REQUEST,
                         'data': serializer.errors}
