@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Project List{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+    <div class="row">
+        <h3>Welcome <span class="text-capitalize">{{request.user}}</span></h3>
+        <div class="col-sm-2 border-end">
+            <ul class="list-unstyled">
+                <li class="d-grid"><a href="{% url "add_basic_info" %}" class="btn">Basic Info</a></li>
+                <li class="d-grid"><a href="{% url "social_media" %}" class="btn">Social Media</a></li>
+                <li class="d-grid"><a href="{% url "add_project" %}" class="btn">Add Projects</a></li>
+                <li class="d-grid"><a href="{% url "add_research" %}" class="btn">Add Research</a></li>
+                <li class="d-grid"><a href="{% url "projects" %}" class="btn btn-primary">Projects</a></li>
+                <li class="d-grid"><a href="{% url "research" %}" class="btn">Researches</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 offset-sm-1">
+            <div class="row">
+                {% for pj in proj %}
+                    <div class="col-sm-15">
+                        <div class="card m-1">
+                            <div class="card-body">
+                                <h3>Title: {{pj.title}}</h3>
+                                <p>Project Type: {{pj.project_type}}</p>
+                                <p>Description: {{pj.description}}</p>
+                                <p>Link: {{pj.link}}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <nav aria-label="...">
+                <ul class="pagination">
+                    {% if proj.has_previous %}
+                        <a class="page-link" href="?page=1" tabindex="-1">First</a>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ proj.previous_page_number }}" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="?page={{ current_page|add:-1 }}">{{ current_page|add:-1 }}</a></li>
+                    {% endif %}
+                        <li class="page-item active">
+                            <a class="page-link" href="?page={{ current_page }}">{{ current_page }}</a>
+                        </li>
+                    {% if proj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ current_page|add:1 }}">{{ current_page|add:1 }}</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ proj.next_page_number }}">Next</a>
+                        </li>
+                        <a class="page-link" href="?page={{ total_pages }}">Last Page</a>
+                    {% endif %}
+                </ul>
+              </nav>
+        </div>
+    </div>
+</div>
+{% endblock main-content %}

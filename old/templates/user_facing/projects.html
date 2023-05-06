@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Projects{% endblock title%}
+{% block main-content %}
+<div class="container">
+  <div class="row mb-4">
+  {% for project in projectss %}
+  <div class="col-sm-6 col-md-4">
+  <div class="card mb-3" style="width: 25rem; height: 25rem;">
+    <img src="..." class="card-img-top" alt="...">
+    <div class="card-body d-flex flex-column">
+      
+        <h5 class="card-title">{{ project.title }}</h5>
+        <p class="card-text">{{ project.description|slice:":250"|linebreaks }}</p>
+        <p><strong>Project Type:</strong> {{ project.project_type }}</p>
+        <div class="mt-auto text-center">
+          <a href="#" class="btn btn-primary">View Project</a>
+        </div>
+    </div>
+  </div>
+</div>
+  {% endfor %}
+</div>
+
+  <nav aria-label="...">
+    <ul class="pagination justify-content-center">
+        {% if projectss.has_previous %}
+            <a class="page-link" href="?page=1" tabindex="-1">First</a>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ projectss.previous_page_number }}" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="?page={{ current_page|add:-1 }}">{{ current_page|add:-1 }}</a></li>
+        {% endif %}
+            <li class="page-item active">
+                <a class="page-link" href="?page={{ current_page }}">{{ current_page }}</a>
+            </li>
+        {% if projectss.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ current_page|add:1 }}">{{ current_page|add:1 }}</a></li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ projectss.next_page_number }}">Next</a>
+            </li>
+            <a class="page-link" href="?page={{ total_pages }}">Last Page</a>
+        {% endif %}
+    </ul>
+  </nav>
+</div>
+</div>
+{% endblock main-content %}
