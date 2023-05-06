@@ -9,6 +9,7 @@ ARTICLE_TYPE_CHOICES = (
     ("PrePrints", "PrePrints")
     )
 
+
 class Research(models.Model):
     title = models.CharField(max_length=200)
     abstract = models.TextField()

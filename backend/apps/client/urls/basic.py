@@ -8,6 +8,6 @@ urlpatterns = [
     # path('', basic.basic_info, name='basic_info'),
     # path('social_media/', views.SocialMediaView.as_view(), name='social_media'),
 
-    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+    # path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
 
 ]

@@ -1,5 +1,4 @@
 from rest_framework.views import APIView
-from ..forms.basic import BasicInfoForm, SocialMediaForm
 from ..serializers.basic import BasicInfoSerializer, SocialMediaSerializer, EducationSerializer
 from ..models.basic import BasicInfo
 from django.contrib import messages
@@ -11,6 +10,7 @@ ROOT_USER = 'quamer23nasim38@gmail.com'
 # Create your views here.
 
 class BasicInfoView(APIView):
+#     queryset = BasicInfo.objects.all()
     def get(self, request):
         basic = BasicInfo.objects.filter(email=ROOT_USER)
         if basic.exists():
@@ -18,17 +18,19 @@ class BasicInfoView(APIView):
             data = {'message': 'Data found',
                     'status': status.HTTP_200_OK,
                     'data': serializer.data}
-            return Response(data, template_name='index.html')
+            return Response(data)
         else:
             data = {'message': 'No data found',
-                    'status': status.HTTP_204_NO_CONTENT}
-            return Response(data, status=status.HTTP_204_NO_CONTENT)
+                    'status': status.HTTP_204_NO_CONTENT,
+                    'data': {}}
+            return Response(data)
         
     def post(self, request, *args, **kwargs):
         basic = BasicInfo.objects.filter(email=ROOT_USER)
         if basic.exists():
             data = {'message': 'Data already exists',
-                    'status': status.HTTP_400_BAD_REQUEST}
+                    'status': status.HTTP_400_BAD_REQUEST,
+                    'data': {}}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
         else:
             serializer = BasicInfoSerializer(data=request.data)
@@ -39,6 +41,7 @@ class BasicInfoView(APIView):
                         'data': serializer.data}
                 return Response(data, status=status.HTTP_201_CREATED)
             else:
+                print('yaha p')
                 data = {'message': 'Bad Request',
                         'status': status.HTTP_400_BAD_REQUEST,
                         'data': serializer.errors}
@@ -60,8 +63,10 @@ class BasicInfoView(APIView):
                         'data': serializer.errors}
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
         else:
+            
             data = {'message': 'Bad Request',
-                    'status': status.HTTP_400_BAD_REQUEST}
+                    'status': status.HTTP_400_BAD_REQUEST,
+                    'data': {}}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
         
     def patch(self, request, *args, **kwargs):
@@ -81,7 +86,8 @@ class BasicInfoView(APIView):
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
         else:
             data = {'message': 'Bad Request',
-                    'status': status.HTTP_400_BAD_REQUEST}
+                    'status': status.HTTP_400_BAD_REQUEST,
+                    'data': {}}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
             
     def delete(self, request, *args, **kwargs):
@@ -89,9 +95,11 @@ class BasicInfoView(APIView):
         if basic.exists():
             basic.delete()
             data = {'message': 'Data deleted',
-                    'status': status.HTTP_200_OK}
+                    'status': status.HTTP_200_OK,
+                    'data': {}}
             return Response(data, status=status.HTTP_200_OK)
         else:
             data = {'message': 'No data found',
-                    'status': status.HTTP_204_NO_CONTENT}
+                    'status': status.HTTP_204_NO_CONTENT,
+                    'data': {}}
             return Response(data, status=status.HTTP_204_NO_CONTENT)

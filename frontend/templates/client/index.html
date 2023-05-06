@@ -2,49 +2,6 @@
 {% load static %}
 {% block title %}Basic Info{% endblock title %}
 {% block main-content %}
-<div class="container my-5">
-    <div class="row">
-        <h3>Welcome <span class="text-capitalize">{{request.user}}</span></h3>
-        <div class="col-sm-9 offset-sm-1">
-            <div class="row">
-                <div class="col-sm-15">
-                    <div class="card m-2">
-                        <div class="card-body">
-                            <p>First Name: <span id="firstname"></span></p>
-                            <p>Last Name: <span id="lastname"></span></p>
-                            <p>Email: <span id="email"></span></p>
-                            <p>Phone Number: <span id="phone"></span></p>
-                            <p>City: <span id="city"></span></p>
-                            <p>State: <span id="state"></span></p>
-                            <p>Country: <span id="country"></span></p>
-                            <p>Zip Code: <span id="zip"></span></p>
-                            <p>Address: <span id="address"></span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+Ok bor
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-  $.ajax({
-    url: "http://127.0.0.1:8000/api/client/profile_update/",
-    success: function(response) {
-      $("#firstname").text(response.data.firstname);
-      $("#lastname").text(response.data.lastname);
-      $("#email").text(response.data.email);
-      $("#phone").text("+ " + response.data.country_code + " - " + response.data.phone_number);
-      $("#city").text(response.data.city);
-      $("#state").text(response.data.state);
-      $("#country").text(response.data.country);
-      $("#zip").text(response.data.zip_code);
-      $("#address").text(response.data.address);
-    },
-    error: function() {
-      $("#data").text("No data found");
-    }
-  });
-</script>
 {% endblock main-content %}
