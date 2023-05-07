@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from ..serializers.basic import BasicInfoSerializer, SocialMediaSerializer, EducationSerializer
+from ..serializers.auth import AuthUserSerializer
 from ..models.basic import BasicInfo
 from django.contrib import messages
 from rest_framework.response import Response
@@ -7,7 +8,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-ROOT_USER = 'quamer23nasim38@gmail.com'
+
+# ROOT_USER = 'quamer23nasim38@gmail.com'
 
 # Create your views here.
 
@@ -16,12 +18,18 @@ class BasicInfoView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request):
-        basic = BasicInfo.objects.filter(email=ROOT_USER)
+        basic = BasicInfo.objects.select_related('user').filter(user=request.user)
         if basic.exists():
-            serializer = BasicInfoSerializer(basic.first())
+            basic_first = basic.first()
+            basic_serializer = BasicInfoSerializer(basic_first)
+            user_serializer = AuthUserSerializer(basic_first.user)
+            
             data = {'message': 'Data found',
                     'status': status.HTTP_200_OK,
-                    'data': serializer.data}
+                    'data': {
+                        'basic': basic_serializer.data,
+                        'user': user_serializer.data
+                    }}
             return Response(data)
         else:
             data = {'message': 'No data found',
@@ -30,7 +38,7 @@ class BasicInfoView(APIView):
             return Response(data)
 
     def post(self, request, *args, **kwargs):
-        basic = BasicInfo.objects.filter(email=ROOT_USER)
+        basic = BasicInfo.objects.filter(user=request.user)
         if basic.exists():
             data = {'message': 'Data already exists',
                     'status': status.HTTP_400_BAD_REQUEST,
@@ -51,7 +59,7 @@ class BasicInfoView(APIView):
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
         
     def put(self, request, *args, **kwargs):
-        basic = BasicInfo.objects.filter(email=ROOT_USER)
+        basic = BasicInfo.objects.filter(user=request.user)
         if basic.exists():
             serializer = BasicInfoSerializer(basic.first(), data=request.data)
             if serializer.is_valid():
@@ -73,7 +81,7 @@ class BasicInfoView(APIView):
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
         
     def patch(self, request, *args, **kwargs):
-        basic = BasicInfo.objects.filter(email=ROOT_USER)
+        basic = BasicInfo.objects.filter(user=request.user)
         if basic.exists():
             serializer = BasicInfoSerializer(basic.first(), data=request.data, partial=True)
             if serializer.is_valid():
@@ -94,7 +102,7 @@ class BasicInfoView(APIView):
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
             
     def delete(self, request, *args, **kwargs):
-        basic = BasicInfo.objects.filter(email=ROOT_USER)
+        basic = BasicInfo.objects.filter(user=request.user)
         if basic.exists():
             basic.delete()
             data = {'message': 'Data deleted',

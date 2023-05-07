@@ -4,7 +4,7 @@
 {% block main-content %}
 <div class="container my-5">
     <div class="row">
-        <h3>Welcome <span class="text-capitalize">{{request.user}}</span></h3>
+        <h3>Welcome <span class="text-capitalize">{{data.basic.firstname}}</span></h3>
         <div class="col-sm-2 border-end">
             <ul class="list-unstyled">
                 <li class="d-grid"><a href="{% url "basic_info" %}" class="btn btn-primary">Basic Info</a></li>
@@ -21,51 +21,46 @@
                 {% csrf_token %}
                 <div class="mb-3">
                   <label for="firstname" class="form-label">First Name</label>
-                  <input type="text" class="form-control" id="firstname" name="firstname" aria-describedby="firstnameHelp" required value="{{ firstname }}">
+                  <input type="text" class="form-control" id="firstname" name="firstname" aria-describedby="firstnameHelp" required value="{{ data.basic.firstname }}">
                   <div class="invalid-feedback">Please enter your first name.</div>
                 </div>
                 <div class="mb-3">
                   <label for="lastname" class="form-label">Last Name</label>
-                  <input type="text" class="form-control" id="lastname" name="lastname" aria-describedby="lastnameHelp" value="{{ lastname }}">
-                </div>
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email</label>
-                  <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" required value="{{ email }}">
-                  <div class="invalid-feedback">Please enter your email.</div>
+                  <input type="text" class="form-control" id="lastname" name="lastname" aria-describedby="lastnameHelp" value="{{ data.basic.lastname }}">
                 </div>
                 <div class="mb-3">
                     <label for="country_code" class="form-label">Country Code</label>
-                    <input type="number" class="form-control" id="country_code" name="country_code" aria-describedby="country_codeHelp" required value="{{ country_code }}">
+                    <input type="number" class="form-control" id="country_code" name="country_code" aria-describedby="country_codeHelp" required value="{{ data.basic.country_code }}">
                     <div class="invalid-feedback">Please enter your country code.</div>
                 </div>
                 <div class="mb-3">
                     <label for="phone_number" class="form-label">Phone Number</label>
-                    <input type="number" class="form-control" id="phone_number" name="phone_number" aria-describedby="phone_numberHelp" required value="{{ phone_number }}">
+                    <input type="number" class="form-control" id="phone_number" name="phone_number" aria-describedby="phone_numberHelp" required value="{{ data.basic.phone_number }}">
                     <div class="invalid-feedback">Please enter your phone number.</div>
                 </div>
                 <div class="mb-3">
                     <label for="city" class="form-label">City</label>
-                    <input type="text" class="form-control" id="city" name="city" aria-describedby="cityHelp" required value="{{ city }}">
+                    <input type="text" class="form-control" id="city" name="city" aria-describedby="cityHelp" required value="{{ data.basic.city }}">
                     <div class="invalid-feedback">Please enter your city.</div>
                 </div>
                 <div class="mb-3">
                     <label for="state" class="form-label">State</label>
-                    <input type="text" class="form-control" id="state" name="state" aria-describedby="stateHelp" required value="{{ state }}">
+                    <input type="text" class="form-control" id="state" name="state" aria-describedby="stateHelp" required value="{{data.basic.state }}">
                     <div class="invalid-feedback">Please enter your state.</div>
                 </div>
                 <div class="mb-3">
                     <label for="country" class="form-label">Country</label>
-                    <input type="text" class="form-control" id="country" name="country" aria-describedby="countryHelp" required value="{{ country }}">
+                    <input type="text" class="form-control" id="country" name="country" aria-describedby="countryHelp" required value="{{ data.basic.country }}">
                     <div class="invalid-feedback">Please enter your country.</div>
                 </div>
                 <div class="mb-3">
                     <label for="zip_code" class="form-label">Zip Code</label>
-                    <input type="number" class="form-control" id="zip_code" name="zip_code" aria-describedby="zip_codeHelp" required value="{{ zip_code }}">
+                    <input type="number" class="form-control" id="zip_code" name="zip_code" aria-describedby="zip_codeHelp" required value="{{ data.basic.zip_code }}">
                     <div class="invalid-feedback">Please enter your zip code.</div>
                 </div>
                 <div class="mb-3">
                     <label for="address" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="address" name="address" aria-describedby="addressHelp" required value="{{ address }}">
+                    <input type="text" class="form-control" id="address" name="address" aria-describedby="addressHelp" required value="{{ data.basic.address }}">
                     <div class="invalid-feedback">Please enter your address.</div>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>

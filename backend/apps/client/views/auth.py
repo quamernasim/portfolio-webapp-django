@@ -22,7 +22,13 @@ class Register(APIView):
         serializer = AuthUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        response = Response()
+        response.data = {
+            'message': 'success',
+            'status': status.HTTP_201_CREATED,
+            'data': serializer.data
+        }
+        return response
 
 class Login(APIView):
     def post(self, request):

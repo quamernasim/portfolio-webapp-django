@@ -152,7 +152,7 @@ from datetime import timedelta
 
 SJWT_SECRET_KEY = 'Quamer@16191'
 SJWT_ALGORITHM = 'HS256'
-SJWT_EXPIRATION_DELTA = timedelta(minutes=1)
+SJWT_EXPIRATION_DELTA = timedelta(minutes=60)
 
 SECRET_KEY
 

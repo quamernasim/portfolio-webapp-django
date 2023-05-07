@@ -4,7 +4,7 @@
 {% block main-content %}
 <div class="container my-5">
     <div class="row">
-        <h3>Welcome <span class="text-capitalize">{{ name }}</span></h3>
+        <h3>Welcome <span class="text-capitalize">{{ data.basic.firstname }}</span></h3>
         <div class="col-sm-2 border-end">
             <ul class="list-unstyled">
                 <li class="d-grid"><a href="{% url "basic_info" %}" class="btn btn-primary">Basic Info</a></li>
@@ -19,19 +19,19 @@
         </div>
         <div class="col-sm-9 offset-sm-1">
             <div class="row">
-                {% if basic %}
+                {% if data %}
                     <div class="col-sm-15">
                         <div class="card m-2">
                             <div class="card-body">
-                                <p>First Name: {{basic.firstname}}</p>
-                                <p>Last Name: {{basic.lastname}}</p>
-                                <p>Email: {{basic.email}}</p>
-                                <p>Phone Number: +{{basic.country_code}}-{{basic.phone_number}}</p>
-                                <p>City: {{basic.city}}</p>
-                                <p>State: {{basic.state}}</p>
-                                <p>Country: {{basic.country}}</p>
-                                <p>Zip Code: {{basic.zip_code}}</p>
-                                <p>Address: {{basic.address}}</p>
+                                <p>First Name: {{data.basic.firstname}}</p>
+                                <p>Last Name: {{data.basic.lastname}}</p>
+                                <p>Email: {{data.user.email}}</p>
+                                <p>Phone Number: +{{data.basic.country_code}}-{{data.basic.phone_number}}</p>
+                                <p>City: {{data.basic.city}}</p>
+                                <p>State: {{data.basic.state}}</p>
+                                <p>Country: {{data.basic.country}}</p>
+                                <p>Zip Code: {{data.basic.zip_code}}</p>
+                                <p>Address: {{data.basic.address}}</p>
                                 <a href="{% url "info_update" %}" class="btn btn-primary">Update</a>
                                 <a href="{% url "delete_info" %}" class="btn btn-danger">Delete</a>
                             </div>

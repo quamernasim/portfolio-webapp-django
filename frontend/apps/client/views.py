@@ -31,16 +31,17 @@ def basic_info(request):
     name = decoded_access_token['user_id']
     
     if response_from_backend.status_code == 200:
-        data = response_from_backend.json()
-        if data['status'] == 200:
-            basic = data['data']
-            return render(request, 'client/basic_info.html', {'basic': basic, 'name': name})
-        elif data['status'] == 204:
-            return render(request, 'client/info_add.html', {'basic': {}, 'name': name})
-    else:
-        return render(request, 'client/basic_info.html', {'basic': {}, 'name': name})
+        response_from_backend = response_from_backend.json()
 
-def parse_basic(request):
+        if response_from_backend['status'] == 200:
+            data = response_from_backend['data']
+            return render(request, 'client/basic_info.html', {'data': data})
+        elif response_from_backend['status'] == 204:          
+            return render(request, 'client/info_add.html', {'data': {}, 'name': name})
+    else:
+        return render(request, 'client/basic_info.html', {'data': {}, 'name': name})
+
+def parse_basic(request, user_id):
     firstname = request.POST.get('firstname')
     lastname = request.POST.get('lastname')
     email = request.POST.get('email')
@@ -51,9 +52,9 @@ def parse_basic(request):
     country = request.POST.get('country')
     zip_code = request.POST.get('zip_code')
     address = request.POST.get('address')
-    data = {"firstname": firstname, 
+    data = {"user": user_id,
+            "firstname": firstname, 
             "lastname": lastname, 
-            "email": email, 
             "country_code": country_code, 
             "phone_number": phone_number, 
             "city": city, 
@@ -71,9 +72,9 @@ def info_add(request):
     if expired:
         print('Token Expired, Getting new token')
         return refresh_token(request, 'basic_info')
+    name = decoded_access_token['user_id']
     headers = {'Authorization': 'Bearer ' + access_token}
-
-    data = parse_basic(request)
+    data = parse_basic(request, name)
     response_from_backend = req.post(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', data = data, headers=headers)
     return redirect(reverse('basic_info'))
 
@@ -90,9 +91,10 @@ def info_update(request):
     if request.method == 'GET':
         response_from_backend = req.get(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', headers=headers)
         data = response_from_backend.json().get('data')
-        return render(request, 'client/update_basic.html', data)
+        return render(request, 'client/update_basic.html', {'data': data})
     elif request.method == 'POST':
-        data = parse_basic(request)
+        name = decoded_access_token['user_id']
+        data = parse_basic(request, name)
         response_from_backend = req.put(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', data = data, headers=headers)
         return redirect(reverse('basic_info'))
     
@@ -117,7 +119,8 @@ def login(request):
     elif request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
-        data = {'email': email, 'password': password}
+        data = {'email': email, 
+                'password': password}
         response_from_backend = req.post(API_ENDPOINT + API_CLIENT_ENDPOINT + 'login/', data = data)
         if response_from_backend.status_code == 200:
             data = response_from_backend.json()
@@ -129,9 +132,36 @@ def login(request):
                 response.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
                 return response
             else:
+                print('check 1')
                 return render(request, 'client/login.html', {'message': 'Invalid Credentials'})
         else:
+            print('check 2')
             return render(request, 'client/login.html', {'message': 'Invalid Credentials'})
+        
+def register(request):
+    if request.method == 'GET':
+        if 'access_token' in request.COOKIES:
+            return redirect(reverse('basic_info'))
+        return render(request, 'client/register.html')
+    elif request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        data = {'name': name, 
+                'email': email, 
+                'password': password}
+        
+        response_from_backend = req.post(API_ENDPOINT + API_CLIENT_ENDPOINT + 'register/', data = data)
+
+        if response_from_backend.status_code == 200:
+            data = response_from_backend.json()
+            if data['status'] == 201:
+                return redirect(reverse('login'))
+            else:
+                return render(request, 'client/register.html', {'message': 'Invalid Input'})
+        else:
+            return render(request, 'client/register.html', {'message': 'Invalid Input'})
         
 def logout(request):
     response = redirect(reverse('login'))
