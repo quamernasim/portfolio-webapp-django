@@ -28,7 +28,7 @@ class BasicInfoView(APIView):
                     'status': status.HTTP_204_NO_CONTENT,
                     'data': {}}
             return Response(data)
-        
+
     def post(self, request, *args, **kwargs):
         basic = BasicInfo.objects.filter(email=ROOT_USER)
         if basic.exists():

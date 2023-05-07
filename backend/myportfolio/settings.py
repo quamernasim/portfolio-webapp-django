@@ -150,15 +150,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 from datetime import timedelta
 
-SJWT_SECRET_KEY = 'secret'
+SJWT_SECRET_KEY = 'Quamer@16191'
 SJWT_ALGORITHM = 'HS256'
-SJWT_EXPIRATION_DELTA = timedelta(hours=1)
+SJWT_EXPIRATION_DELTA = timedelta(minutes=1)
 
 SECRET_KEY
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": SJWT_EXPIRATION_DELTA,
-
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
     "ALGORITHM": SJWT_ALGORITHM,
     "SIGNING_KEY": SJWT_SECRET_KEY,
     "VERIFYING_KEY": SJWT_SECRET_KEY,

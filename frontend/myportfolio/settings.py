@@ -131,5 +131,8 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-SJWT_SECRET_KEY = 'secret'
+SJWT_SECRET_KEY = 'Quamer@16191'
 SJWT_ALGORITHM = 'HS256'
+
+API_ENDPOINT = "http://127.0.0.1:8000/"
+API_CLIENT_ENDPOINT = "api/client/"

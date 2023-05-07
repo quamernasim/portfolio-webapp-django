@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from .managers import CustomUserManager
 
 class AuthUser(AbstractUser):
     name = models.CharField(max_length=255)
@@ -24,3 +25,5 @@ class AuthUser(AbstractUser):
         help_text='Specific permissions for this user.', 
         verbose_name='user permissions',
     )
+
+    objects = CustomUserManager()

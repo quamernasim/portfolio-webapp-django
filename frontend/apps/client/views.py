@@ -1,39 +1,44 @@
 from django.shortcuts import render, redirect, reverse
 import requests as req
 from django.conf import settings
-from rest_framework_simplejwt.tokens import AccessToken
 import jwt
+from .utils import refresh_token, is_access_token_expired
 
-secret_key = settings.SJWT_SECRET_KEY
-algorithm = settings.SJWT_ALGORITHM
+SECRECT_KEY = settings.SJWT_SECRET_KEY
+ALGORITHM = settings.SJWT_ALGORITHM
 
 # from .forms import BasicInfoForm
 
-API_ENDPOINT = "http://127.0.0.1:8000/"
-API_CLIENT_ENDPOINT = "api/client/"
-
-from rest_framework_simplejwt.backends import TokenBackend
+API_ENDPOINT = settings.API_ENDPOINT
+API_CLIENT_ENDPOINT = settings.API_CLIENT_ENDPOINT
 
 # Create your views here.
 def basic_info(request):
-    jwt_token = request.COOKIES.get('jwt')
-    if jwt_token:
-        headers = {'Authorization': 'Bearer ' + jwt_token}
-        response_from_backend = req.get(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', headers=headers)
-
-        payload = jwt.decode(str(jwt_token), secret_key, algorithms=algorithm)
-        name = payload['user_id']
-        if response_from_backend.status_code == 200:
-            data = response_from_backend.json()
-            if data['status'] == 200:
-                basic = data['data']
-                return render(request, 'client/basic_info.html', {'basic': basic, 'name': name})
-            elif data['status'] == 204:
-                return render(request, 'client/info_add.html', {'basic': {}, 'name': name})
-        else:
-            return render(request, 'client/basic_info.html', {'basic': {}, 'name': name})
-    else:
+    access_token = request.COOKIES.get('access_token')
+    
+    if not access_token:
         return redirect(reverse('login'))
+    
+    expired, decoded_access_token = is_access_token_expired(access_token)
+    
+    if expired:
+        print('Token Expired, Getting new token')
+        return refresh_token(request, 'basic_info')
+
+    headers = {'Authorization': 'Bearer ' + access_token}
+    response_from_backend = req.get(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', headers=headers)
+
+    name = decoded_access_token['user_id']
+    
+    if response_from_backend.status_code == 200:
+        data = response_from_backend.json()
+        if data['status'] == 200:
+            basic = data['data']
+            return render(request, 'client/basic_info.html', {'basic': basic, 'name': name})
+        elif data['status'] == 204:
+            return render(request, 'client/info_add.html', {'basic': {}, 'name': name})
+    else:
+        return render(request, 'client/basic_info.html', {'basic': {}, 'name': name})
 
 def parse_basic(request):
     firstname = request.POST.get('firstname')
@@ -59,27 +64,54 @@ def parse_basic(request):
     return data
 
 def info_add(request):
+    access_token = request.COOKIES.get('access_token')
+    if not access_token:
+        return redirect(reverse('login'))
+    expired, decoded_access_token = is_access_token_expired(access_token)
+    if expired:
+        print('Token Expired, Getting new token')
+        return refresh_token(request, 'basic_info')
+    headers = {'Authorization': 'Bearer ' + access_token}
+
     data = parse_basic(request)
-    response_from_backend = req.post(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', data = data)
+    response_from_backend = req.post(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', data = data, headers=headers)
     return redirect(reverse('basic_info'))
 
 def info_update(request):
+    access_token = request.COOKIES.get('access_token')
+    if not access_token:
+        return redirect(reverse('login'))
+    expired, decoded_access_token = is_access_token_expired(access_token)
+    if expired:
+        print('Token Expired, Getting new token')
+        return refresh_token(request, 'info_update')
+    headers = {'Authorization': 'Bearer ' + access_token}
+
     if request.method == 'GET':
-        response_from_backend = req.get(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/')
+        response_from_backend = req.get(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', headers=headers)
         data = response_from_backend.json().get('data')
         return render(request, 'client/update_basic.html', data)
     elif request.method == 'POST':
         data = parse_basic(request)
-        response_from_backend = req.put(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', data = data)
+        response_from_backend = req.put(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', data = data, headers=headers)
         return redirect(reverse('basic_info'))
     
 def delete_info(request):
-    req.delete(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/')
+    access_token = request.COOKIES.get('access_token')
+    if not access_token:
+        return redirect(reverse('login'))
+    expired, decoded_access_token = is_access_token_expired(access_token)
+    if expired:
+        print('Token Expired, Getting new token')
+        return refresh_token(request, 'info_update')
+    headers = {'Authorization': 'Bearer ' + access_token}
+
+    req.delete(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', headers=headers)
     return redirect(reverse('basic_info'))
 
 def login(request):
     if request.method == 'GET':
-        if 'jwt' in request.COOKIES:
+        if 'access_token' in request.COOKIES:
             return redirect(reverse('basic_info'))
         return render(request, 'client/login.html')
     elif request.method == 'POST':
@@ -90,9 +122,11 @@ def login(request):
         if response_from_backend.status_code == 200:
             data = response_from_backend.json()
             if data['status'] == 200:
-                jwt_token = data['jwt']
+                access_token = data['access_token']
+                refresh_token = data['refresh_token']
                 response = redirect(reverse('basic_info'))
-                response.set_cookie(key='jwt', value=jwt_token, httponly=True)
+                response.set_cookie(key='access_token', value=access_token, httponly=True)
+                response.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
                 return response
             else:
                 return render(request, 'client/login.html', {'message': 'Invalid Credentials'})
@@ -101,5 +135,7 @@ def login(request):
         
 def logout(request):
     response = redirect(reverse('login'))
-    response.delete_cookie('jwt')
+    response.delete_cookie('access_token')
+    response.delete_cookie('refresh_token')
     return response
+

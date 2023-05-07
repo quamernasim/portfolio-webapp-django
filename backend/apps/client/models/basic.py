@@ -1,9 +1,10 @@
 from django.db import models
-
+from .auth import AuthUser
 # Create your models here.
 
 # Create your models here.
 class BasicInfo(models.Model):
+    user = models.OneToOneField(AuthUser, on_delete=models.CASCADE, related_name='basic_info')
     firstname = models.CharField(max_length=50)
     lastname = models.CharField(max_length=50 ,blank=True)
     email = models.EmailField()
