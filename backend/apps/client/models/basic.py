@@ -19,7 +19,7 @@ class BasicInfo(models.Model):
         return self.firstname
 
 class SocialMedia(models.Model):
-    basic_info = models.OneToOneField(BasicInfo, on_delete=models.CASCADE, related_name='social_media')
+    user = models.OneToOneField(AuthUser, on_delete=models.CASCADE, related_name='social_info', default='')
     facebook = models.URLField(blank=True)
     twitter = models.URLField(blank=True)
     instagram = models.URLField(blank=True)
@@ -34,11 +34,11 @@ class SocialMedia(models.Model):
         return self.linkedin
 
 class Education(models.Model):
+    user = models.ForeignKey(BasicInfo, on_delete=models.CASCADE)
     degree = models.CharField(max_length=100)
     institution = models.CharField(max_length=100)
     start_year = models.IntegerField()
     end_year = models.IntegerField()
-    user = models.ForeignKey(BasicInfo, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.degree

@@ -7,7 +7,7 @@ from .models.auth import AuthUser
 
 # Register your models here.
 # admin.site.register(BasicInfo)
-admin.site.register(SocialMedia)
+# admin.site.register(SocialMedia)
 admin.site.register(Project)
 admin.site.register(Research)
 admin.site.register(Education)
@@ -18,6 +18,10 @@ admin.site.register(Skill)
 @admin.register(BasicInfo)
 class BasicInfoAdmin(admin.ModelAdmin):
     list_display = ['__str__'] + [field.name for field in BasicInfo._meta.fields]
+
+@admin.register(SocialMedia)
+class SocialMediaAdmin(admin.ModelAdmin):
+    list_display = ['__str__'] + [field.name for field in SocialMedia._meta.fields]
 
 @admin.register(AuthUser)
 class AuthUserAdmin(admin.ModelAdmin):

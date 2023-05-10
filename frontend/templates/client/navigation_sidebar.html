@@ -1,0 +1,11 @@
+<div class="col-sm-2 border-end">
+    <ul class="list-unstyled">
+        <li class="d-grid"><a href="{% url "basic_info" %}" class="btn{% if request.resolver_match.url_name == "basic_info" %} btn-primary{% endif %}">Basic Info</a></li>
+        <li class="d-grid"><a href="{% url "social_media" %}" class="btn{% if request.resolver_match.url_name == "social_media" %} btn-primary{% endif %}">Social Media</a></li>
+        <li class="d-grid"><a href="#" class="btn">Add Projects</a></li>
+        <li class="d-grid"><a href="#" class="btn">Add Research</a></li>
+        <li class="d-grid"><a href="#" class="btn">Projects</a></li>
+        <li class="d-grid"><a href="#" class="btn">Researches</a></li>
+        <li class="d-grid"><a href="{% url "logout" %}" class="btn">Logout</a></li>
+    </ul>
+</div>

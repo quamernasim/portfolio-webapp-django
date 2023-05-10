@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Basic Info{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+    <div class="row">
+        <h3>Welcome <span class="text-capitalize">{{ data.basic.firstname }}</span></h3>
+        {% include 'client/navigation_sidebar.html' %}
+        <div class="col-sm-9 offset-sm-1">
+            <div class="row">
+                {% if data %}
+                    <div class="col-sm-15">
+                        <div class="card m-2">
+                            <div class="card-body">
+                                <p>Facebook: {{data.social.facebook}}</p>
+                                <p>Twitter: {{data.social.twitter}}</p>
+                                <p>Instagram: {{data.social.instagram}}</p>
+                                <p>Linkedin: {{data.social.linkedin}}</p>
+                                <p>Github: {{data.social.github}}</p>
+                                <p>Medium: {{data.social.medium}}</p>
+                                <p>Stackoverflow: {{data.social.stackoverflow}}</p>
+                                <p>Whatsapp: {{data.social.whatsapp}}</p>
+                                <p>Telegram: {{data.social.telegram}}</p>
+                                <a href="{% url "social_media_update" %}" class="btn btn-primary">Update</a>
+                                <a href="{% url "delete_social_media" %}" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main-content %}

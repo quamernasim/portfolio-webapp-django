@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Basic Info{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+    <div class="row">
+        <h3>Welcome <span class="text-capitalize">{{ name }}</span></h3>
+        {% include 'client/navigation_sidebar.html' %}
+        <div class="col-sm-8 offset-sm-1">
+            <form action="{% url "social_media_add" %}" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label for="facebook" class="form-label">Facebook</label>
+                  <input type="url" class="form-control" id="facebook" name="facebook" aria-describedby="facebookHelp">
+                  <div class="invalid-feedback">Please enter your Facebook Id.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="twitter" class="form-label">Twitter</label>
+                  <input type="url" class="form-control" id="twitter" name="twitter" aria-describedby="twitterHelp">
+                  <div class="invalid-feedback">Please enter your Twitter Id.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="instagram" class="form-label">Instagram</label>
+                  <input type="url" class="form-control" id="instagram" name="instagram" aria-describedby="instagramHelp">
+                  <div class="invalid-feedback">Please enter your Instagram Id.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="linkedin" class="form-label">Linkedin</label>
+                  <input type="url" class="form-control" id="linkedin" name="linkedin" aria-describedby="linkedinHelp" required>
+                  <div class="invalid-feedback">Please enter your Linkedin Id.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="github" class="form-label">GitHub</label>
+                  <input type="url" class="form-control" id="github" name="github" aria-describedby="githubHelp" required>
+                  <div class="invalid-feedback">Please enter your Github Id.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="medium" class="form-label">Medium</label>
+                  <input type="url" class="form-control" id="medium" name="medium" aria-describedby="mediumHelp">
+                  <div class="invalid-feedback">Please enter your Medium Id.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="stackoverflow" class="form-label">StackOverFlow</label>
+                  <input type="url" class="form-control" id="stackoverflow" name="stackoverflow" aria-describedby="stackoverflowHelp">
+                  <div class="invalid-feedback">Please enter your Stackoverflow Id.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="whatsapp" class="form-label">Whatsapp</label>
+                  <input type="url" class="form-control" id="whatsapp" name="whatsapp" aria-describedby="whatsappHelp">
+                  <div class="invalid-feedback">Please enter your Whatsapp Id.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="telegram" class="form-label">Telegram</label>
+                  <input type="url" class="form-control" id="telegram" name="telegram" aria-describedby="telegramHelp">
+                  <div class="invalid-feedback">Please enter your Telegram Id.</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>            
+        </div>
+    </div>
+</div>
+{% endblock main-content %}

@@ -40,6 +40,34 @@ def basic_info(request):
             return render(request, 'client/info_add.html', {'data': {}, 'name': name})
     else:
         return render(request, 'client/basic_info.html', {'data': {}, 'name': name})
+    
+def social_media(request):
+    access_token = request.COOKIES.get('access_token')
+    
+    if not access_token:
+        return redirect(reverse('login'))
+    
+    expired, decoded_access_token = is_access_token_expired(access_token)
+    
+    if expired:
+        print('Token Expired, Getting new token')
+        return refresh_token(request, 'basic_info')
+
+    headers = {'Authorization': 'Bearer ' + access_token}
+    response_from_backend = req.get(API_ENDPOINT + API_CLIENT_ENDPOINT + 'social_update/', headers=headers)
+
+    name = decoded_access_token['user_id']
+    
+    if response_from_backend.status_code == 200:
+        response_from_backend = response_from_backend.json()
+
+        if response_from_backend['status'] == 200:
+            data = response_from_backend['data']
+            return render(request, 'client/social_media.html', {'data': data})
+        elif response_from_backend['status'] == 204:          
+            return render(request, 'client/social_media_add.html', {'data': {}, 'name': name})
+    else:
+        return render(request, 'client/social_media.html', {'data': {}, 'name': name})
 
 def parse_basic(request, user_id):
     firstname = request.POST.get('firstname')
@@ -64,6 +92,28 @@ def parse_basic(request, user_id):
             "address": address}
     return data
 
+def parse_social(request, user_id):
+    facebook = request.POST.get('facebook')
+    twitter = request.POST.get('twitter')
+    instagram = request.POST.get('instagram')
+    linkedin = request.POST.get('linkedin')
+    github = request.POST.get('github')
+    medium = request.POST.get('medium')
+    stackoverflow = request.POST.get('stackoverflow')
+    whatsapp = request.POST.get('whatsapp')
+    telegram = request.POST.get('telegram')
+    data = {"user": user_id,
+            "facebook": facebook, 
+            "twitter": twitter, 
+            "instagram": instagram, 
+            "linkedin": linkedin, 
+            "github": github, 
+            "medium": medium, 
+            "stackoverflow": stackoverflow, 
+            "whatsapp": whatsapp, 
+            "telegram": telegram}
+    return data
+
 def info_add(request):
     access_token = request.COOKIES.get('access_token')
     if not access_token:
@@ -77,6 +127,20 @@ def info_add(request):
     data = parse_basic(request, name)
     response_from_backend = req.post(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', data = data, headers=headers)
     return redirect(reverse('basic_info'))
+
+def social_media_add(request):
+    access_token = request.COOKIES.get('access_token')
+    if not access_token:
+        return redirect(reverse('login'))
+    expired, decoded_access_token = is_access_token_expired(access_token)
+    if expired:
+        print('Token Expired, Getting new token')
+        return refresh_token(request, 'basic_info')
+    name = decoded_access_token['user_id']
+    headers = {'Authorization': 'Bearer ' + access_token}
+    data = parse_social(request, name)
+    response_from_backend = req.post(API_ENDPOINT + API_CLIENT_ENDPOINT + 'social_update/', data = data, headers=headers)
+    return redirect(reverse('social_media'))
 
 def info_update(request):
     access_token = request.COOKIES.get('access_token')
@@ -97,6 +161,26 @@ def info_update(request):
         data = parse_basic(request, name)
         response_from_backend = req.put(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', data = data, headers=headers)
         return redirect(reverse('basic_info'))
+
+def social_media_update(request):
+    access_token = request.COOKIES.get('access_token')
+    if not access_token:
+        return redirect(reverse('login'))
+    expired, decoded_access_token = is_access_token_expired(access_token)
+    if expired:
+        print('Token Expired, Getting new token')
+        return refresh_token(request, 'info_update')
+    headers = {'Authorization': 'Bearer ' + access_token}
+
+    if request.method == 'GET':
+        response_from_backend = req.get(API_ENDPOINT + API_CLIENT_ENDPOINT + 'social_update/', headers=headers)
+        data = response_from_backend.json().get('data')
+        return render(request, 'client/update_social.html', {'data': data})
+    elif request.method == 'POST':
+        name = decoded_access_token['user_id']
+        data = parse_social(request, name)
+        response_from_backend = req.put(API_ENDPOINT + API_CLIENT_ENDPOINT + 'social_update/', data = data, headers=headers)
+        return redirect(reverse('social_media'))
     
 def delete_info(request):
     access_token = request.COOKIES.get('access_token')
@@ -110,6 +194,19 @@ def delete_info(request):
 
     req.delete(API_ENDPOINT + API_CLIENT_ENDPOINT + 'profile_update/', headers=headers)
     return redirect(reverse('basic_info'))
+
+def delete_social_media(request):
+    access_token = request.COOKIES.get('access_token')
+    if not access_token:
+        return redirect(reverse('login'))
+    expired, decoded_access_token = is_access_token_expired(access_token)
+    if expired:
+        print('Token Expired, Getting new token')
+        return refresh_token(request, 'info_update')
+    headers = {'Authorization': 'Bearer ' + access_token}
+
+    req.delete(API_ENDPOINT + API_CLIENT_ENDPOINT + 'social_update/', headers=headers)
+    return redirect(reverse('social_media'))
 
 def login(request):
     if request.method == 'GET':

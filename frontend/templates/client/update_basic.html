@@ -5,17 +5,7 @@
 <div class="container my-5">
     <div class="row">
         <h3>Welcome <span class="text-capitalize">{{data.basic.firstname}}</span></h3>
-        <div class="col-sm-2 border-end">
-            <ul class="list-unstyled">
-                <li class="d-grid"><a href="{% url "basic_info" %}" class="btn btn-primary">Basic Info</a></li>
-                <li class="d-grid"><a href="#" class="btn">Social Media</a></li>
-                <li class="d-grid"><a href="#" class="btn">Add Projects</a></li>
-                <li class="d-grid"><a href="#" class="btn">Add Research</a></li>
-                <li class="d-grid"><a href="#" class="btn">Projects</a></li>
-                <li class="d-grid"><a href="#" class="btn">Researches</a></li>
-
-            </ul>
-        </div>
+        {% include 'client/navigation_sidebar.html' %}
         <div class="col-sm-8 offset-sm-1">
             <form action="{% url "info_update" %}" method="post">
                 {% csrf_token %}
