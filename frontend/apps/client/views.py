@@ -15,7 +15,7 @@ API_CLIENT_ENDPOINT = settings.API_CLIENT_ENDPOINT
 # Create your views here.
 def basic_info(request):
     access_token = request.COOKIES.get('access_token')
-    
+    print(access_token)
     if not access_token:
         return redirect(reverse('login'))
     
@@ -175,6 +175,7 @@ def social_media_update(request):
     if request.method == 'GET':
         response_from_backend = req.get(API_ENDPOINT + API_CLIENT_ENDPOINT + 'social_update/', headers=headers)
         data = response_from_backend.json().get('data')
+        # print(data['social'])
         return render(request, 'client/update_social.html', {'data': data})
     elif request.method == 'POST':
         name = decoded_access_token['user_id']

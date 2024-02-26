@@ -8,7 +8,7 @@ class BasicInfo(models.Model):
     firstname = models.CharField(max_length=50)
     lastname = models.CharField(max_length=50 ,blank=True)
     country_code = models.IntegerField()
-    phone_number = models.IntegerField()
+    phone_number = models.BigIntegerField()
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
@@ -34,11 +34,11 @@ class SocialMedia(models.Model):
         return self.linkedin
 
 class Education(models.Model):
-    user = models.ForeignKey(BasicInfo, on_delete=models.CASCADE)
+    user = models.ForeignKey(AuthUser, on_delete=models.CASCADE, default='')
     degree = models.CharField(max_length=100)
     institution = models.CharField(max_length=100)
-    start_year = models.IntegerField()
-    end_year = models.IntegerField()
+    year = models.IntegerField(default=0)
+    cgpa = models.FloatField(default=0)
 
     def __str__(self):
         return self.degree
